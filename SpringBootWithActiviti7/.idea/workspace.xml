@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="b9da26f3-c9c5-472e-8cee-be58132cac32" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="BpmnFile" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="1" />
+  </component>
+  <component name="ProjectId" id="1YYUDGQfMO1BPZBt4Auh6gqQQUo" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/org/example" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="org.example" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.example" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\ideaProjects\SpringBootWithActiviti7\src\main\java\org\example" />
+      <recent name="D:\ideaProjects\SpringBootWithActiviti7\src\main\resources" />
+      <recent name="D:\ideaProjects\SpringBootWithActiviti7\src\main\java\activiti" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.ActivitiTest (1)">
+    <configuration name="Actviti7DemoApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.Actviti7DemoApplication" />
+      <module name="SpingBootWithActiviti7" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ActivitiTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="SpingBootWithActiviti7" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="activiti.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="activiti" />
+      <option name="MAIN_CLASS_NAME" value="activiti.ActivitiTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ActivitiTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="SpingBootWithActiviti7" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example" />
+      <option name="MAIN_CLASS_NAME" value="org.example.ActivitiTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ActivitiTest01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="SpingBootWithActiviti7" />
+      <option name="PACKAGE_NAME" value="org.example" />
+      <option name="MAIN_CLASS_NAME" value="org.example.ActivitiTest01" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.ActivitiTest (1)" />
+        <item itemvalue="JUnit.ActivitiTest" />
+        <item itemvalue="Application.Actviti7DemoApplication" />
+        <item itemvalue="JUnit.ActivitiTest01" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b9da26f3-c9c5-472e-8cee-be58132cac32" name="Default Changelist" comment="" />
+      <created>1583118899554</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1583118899554</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1026" y="348" width="429" height="271" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1583132297747">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="1026" y="348" width="429" height="271" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1536.824@0.0.1536.824" timestamp="1583132297747" />
+    <state x="371" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1583132905571">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="371" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1536.824@0.0.1536.824" timestamp="1583132905571" />
+    <state x="528" y="163" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1583132936707">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="528" y="163" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1536.824@0.0.1536.824" timestamp="1583132936707" />
+    <state width="1356" height="346" key="GridCell.Tab.0.bottom" timestamp="1583134267785">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1356" height="346" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1583134267785" />
+    <state width="1356" height="346" key="GridCell.Tab.0.center" timestamp="1583134267783">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1356" height="346" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1583134267783" />
+    <state width="1356" height="346" key="GridCell.Tab.0.left" timestamp="1583134267781">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1356" height="346" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1583134267781" />
+    <state width="1356" height="346" key="GridCell.Tab.0.right" timestamp="1583134267784">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1356" height="346" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1583134267784" />
+    <state x="427" y="257" key="com.intellij.ide.util.TipDialog" timestamp="1583123567303">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="427" y="257" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1583123567303" />
+  </component>
+</project>

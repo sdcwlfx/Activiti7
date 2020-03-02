@@ -1,0 +1,78 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd
+    ">
+
+    <!-- 数据源 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/activiti"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+        <property name="maxActive" value="3"/>
+        <property name="maxIdle" value="1"/>
+    </bean>
+
+    <!-- 工作流引擎配置bean -->
+    <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 使用spring事务管理器 -->
+        <property name="transactionManager" ref="transactionManager"/>
+        <!-- 数据库策略 -->
+        <property name="databaseSchemaUpdate" value="drop-create"/>
+    </bean>
+
+
+    <!-- 流程引擎 ,通过工厂方式创建processEngine，并依赖注入processEngineConfiguration对象-->
+    <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+        <property name="processEngineConfiguration" ref="processEngineConfiguration"/>
+    </bean>
+    <!-- 资源服务service -->
+    <bean id="repositoryService" factory-bean="processEngine"
+          factory-method="getRepositoryService"/>
+    <!-- 流程运行service -->
+    <bean id="runtimeService" factory-bean="processEngine"
+          factory-method="getRuntimeService"/>
+    <!-- 任务管理service -->
+    <bean id="taskService" factory-bean="processEngine"
+          factory-method="getTaskService"/>
+    <!-- 历史管理service -->
+    <bean id="historyService" factory-bean="processEngine"
+          factory-method="getHistoryService"/>
+
+    <!-- 事务管理器 -->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 通知 -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!-- 传播行为 -->
+            <tx:method name="save*" propagation="REQUIRED"/>
+            <tx:method name="insert*" propagation="REQUIRED"/>
+            <tx:method name="delete*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="find*" propagation="SUPPORTS" read-only="true"/>
+            <tx:method name="get*" propagation="SUPPORTS" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- 切面，根据具体项目修改切点配置 -->
+    <aop:config proxy-target-class="true">
+        <aop:advisor advice-ref="txAdvice"
+                     pointcut="execution(* activiti.*.*(..))"/>
+    </aop:config>
+</beans>
