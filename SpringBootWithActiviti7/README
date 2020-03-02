@@ -1,0 +1,13 @@
+src/main/java/activiti/SecurityUtil: SpringSecurity框架(用户认证)所需工具类
+src/main/java/activiti/DemoApplicationConfiguration： 配置类，配置SpringSecurity框架的用户角色信息
+
+src/main/java/activiti/Actviti7DemoApplication：Activiti7与SpringBoot、SpringMVC的整合需要的引导类
+src/main/java/activiti/controller/MyController.java： Activiti7与SpringBoot、SpringMVC的整合的控制器类，响应"localhost:8080:/task"
+
+src/main/resources/processes/SlamDunk.bpmn: 流程定义(包含三个任务结点，开始事件、结束事件)
+src/main/resources/application.yml： Activiti7与SpringBoot整合需要的链接数据库(数据库名：activiti)，以及开启使用历史表
+src/test/java/activiti/ActivitiTest：Activiti7与SpringBoot整合的测试类，包含流程定义查看、启动流程实例、查询/完成任务
+
+pom.xml: 项目依赖
+
+

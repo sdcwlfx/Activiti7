@@ -1,0 +1,318 @@
+
+
+Activiti7与SpringBoot整合：https://www.xugj520.cn/category/Activiti/
+Activiti7初探：https://blog.csdn.net/weixin_36142042/article/details/89506547
+详解HistoryService组件：https://blog.csdn.net/luckyzhoustar/article/details/48652783
+Activiti数据库表结构：https://www.devdoc.cn/activiti-table-summary.html
+边界事件：https://blog.csdn.net/qq_33333654/article/details/101373157
+https://my.oschina.net/JavaLaw/blog/1589427
+《疯狂工作流讲义(Activiti6.x)》https://my.oschina.net/JavaLaw/blog/1577577
+
+spring与数据源链接 hive、spark、mysql、gp、cdh
+
+基础内容：
+
+1. 内部核心机制的实现原理
+
+
+2. 支持的数据库：
+	mysql、h2、oracle、postgres、db2、mssql
+
+3. 数据库表命名规则
+	表都以ACT_开头。 第二部分是表示表的用途的两个字母标识。
+		ACT_RE_*: 'RE'表示repository。 这个前缀的表包含了流程定义和流程静态资源 （图片， 规则，等等）
+		ACT_RU_*: 'RU'表示runtime。 这些运行时的表，包含流程实例，任务，变量，异步任务， 等运行中的数据。 Activiti 只在流程实例执行过程中保存这些数据， 在流程结束时就会删
+		除这些记录。 这样运行时表可以一直很小速度很快。
+		ACT_HI_*: 'HI'表示history。 这些表包含历史数据，比如历史流程实例， 变量，任务等
+		等。
+		ACT_GE_*: GE 表示general。通用数据， 用于不同场景下。
+
+4. Activiti服务架构图
+	activiti.cfg.xml: 引擎配置文件，包括：ProcessEngineConfiguration 的定义、数据源定义、事务管理器等。
+	
+	流程引擎配置，两种方法：
+		1. StandaloneProcessEngineConfiguration：单独运行，使用它创建的ProcessEngine，Activiti 会自己处理事务
+		2. SpringProcessEngineConfiguration：与Spring整合，需要创建spring 与activiti 的整合配置文件：activity-spring.cfg.xml（名称不固定）
+		
+	创建activiti数据库流程：
+		1. 读取activiti.cfg.xml配置文件，创建processEngineConfiguration对象
+		2. 利用创建processEngineConfiguration对象创建ProcessEngine对象(会自动创建25张数据库表)
+		3. 利用ProcessEngine对象可以获取各种服务接口。
+			
+	五种Service：RepositoryService、RuntimeService、TaskService、HistoryService、ManagerService
+	
+5. 入门样例
+	5.1 new->BpmnFile ,绘画业务流程图，结束后会得到两个文件：.bpmn及.png
+	5.2 流程定义key ->流程定义的标识(即id,如请假申请单)
+			相同的业务流程，流程定义的key名字定义一样(类似Java类名)。
+	5.3 指定各任务负责人(Assignee)
+	5.4 使用RepositoryService将流程定义(包括流程定义bpm文件和图片文件)部署在工作流引擎activiti中。
+	5.5 启动一个流程实例，类似new 一个Java对象，需要RuntimeService根据流程定义的key启动。
+	5.6 负责人查询当前待办任务，需要使用TaskService创建查询，指定参数：流程定义key(流程名)，查询的负责人。
+	5.7 任务处理，使用taskService处理指定任务，需要传入任务id.
+
+6. 流程定义 ->描述业务流程，使用插件绘制流程图
+	将.bpmn文件重命名为.xml，右键->Diagrams->Show BPMN2.0 Designer,生成流程的.png图片。
+	
+	6.1 部署流程定义->将定义的流程(.bpmn及.png文件)通过RepositoryService对象部署到activiti数据库中
+		方式一：单个文件部署
+				通过RepositoryService对象将bpmn文件和png图片文件分别部署到activiti数据库中
+		方式二：压缩包部署
+				将holiday.bpmn和holiday.png压缩成zip包，部署后会被解压成原始文件
+				
+	6.2 操作数据表
+		act_re_deployment:流程定义部署表，记录流程部署信息
+		act_re_procdef:流程定义表，记录流程定义信息
+		act_ge_bytearray:资源表
+	
+	6.3 流程定义操作
+		6.3.1 查询
+				使用RepositoryService对象，指定流程定义Key(id)来查询
+		6.3.2 删除
+				使用RepositoryService对象，指定流程部署id来删除，分为普通删除、级联删除
+				普通删除：删除没有正在运行的实例的流程定义
+				级联删除：删除有正在运行的实例的流程定义，可以将流程及相关记录全部删除。若使用普通删除会报错
+		
+		6.3.3 流程定义资源查询 ->通过RepositoryService对象
+				方式一：通过流程定义对象获取
+				方式二：通过流程部署id获取
+		6.3.4 流程历史信息查看
+				通过HistoryService对象查看流程执行的历史信息，包括已经删除的流程定义。
+
+
+
+进阶一：
+1. 流程实例 ->一个流程实例：需要包括多个任务(节点)及开始事件、结束事件；[活动包括任务、开始事件、结束事件]
+	1.1 业务标识(Businesskey)：与流程实例一一对应，流程实例启动时，指定的业务标识会存储在act_ru_execution(流程实例执行表)
+	1.2 数据库表
+		act_ru_execution #流程实例执行表，记录当前流程实例的执行情况，流程实例运行完成，此表中与流程实例相关的记录删除。
+						不论当前有几个分支总会有一条记录的执行表的主键和流程实例id 相同 
+		act_ru_task #任务执行表，记录当前执行的任务，一个流程实例：从开始到结束经过多个任务结点。任务完成则记录删除
+		act_hi_taskinst #任务历史表，记录所有任务，主键是任务id,任务完成后不会删除，任务启动时，会同时向act_ru_task、act_hi_taskinst插入记录
+		act_ru_identitylink #任务参与者，记录当前参与任务的用户或组
+		act_hi_identitylink #任务参与者历史表，任务完成后不会删除。
+		act_hi_procinst #流程实例历史表，流程实例启动后会向该表插入一条记录，流程实例运行完成后不会删除
+		act_hi_actinst #活动历史表，记录所有活动[包括任务、开始事件、结束事件]
+		
+	1.3 关联businessKey
+		通过流程实例获取业务标识(businessKey)，再通过业务标识(businessKey)关联业务系统中具体表单
+	1.4 挂起、激活流程实例
+		全部流程实例挂起：将流程定义为挂起状态，该流程定义将不允许启动新的流程实例，同时该流程定义下所有的流程实例将 全部挂起暂停执行。
+		单个流程实例挂起：对流程实例对象挂起，则此流程不再继续执行，完成 该流程实例的当前任务将报异常。
+
+2. 个人任务
+	2.1 分配任务负责人
+		固定分配、表达式分配[流程变量、Bean方法、条件判断]
+		统一表达式语言：activiti支持两个UEL表达式 ->UEL-value(流程变量)和UEL-method(Bean方法)
+			流程变量：流程实例启动时通过RunTimeService对象将流程变量(如Map对象)传入
+	2.2 任务监听器->发生对应的任务相关事件时执行自定义Java逻辑或表达式  
+			任务相关事件包括：
+				Create:任务创建后触发
+				Assignment:任务分配后触发
+				Delete:任务完成后触发
+				All:所有事件发生都触发
+			其中Java逻辑类需要实现TaskListener接口，并在bpmn中指定触发方法(包名.类名.方法)
+			
+			
+			
+	2.3 关联businessKey
+			通过TaskService对象(传入流程定义Key和任务负责人)查询待办任务，并获取任务id(等于流程实例id)，通过RuntimeService对象(传入流程实例id)获取流程实例对象，
+			通过流程实例对象获取业务标识(businessKey),在通过业务标识(businessKey，与流程实例一一对应)获取业务系统中实例的详细信息。
+			
+	
+3. 流程变量
+	3.1 变量类型 
+			string、integer、short、long、double、boolean、date、binary、serializable
+			如果将 pojo 存储到流程变量中，必须实现序列化接口serializable，为了防止由于新增字段无 法反序列化，需要生成serialVersionUID
+	3.2 流程变量作用域
+		global变量：默认作用域是一个流程实例
+			方法:
+				启动流程时设置(通过RuntimeService对象)
+				任务办理时设置(通过TaskService对象)
+				当前流程实例设置(通过RuntimeService对象)
+				当前任务设置(通过TaskService对象)
+				
+		local变量：任务、执行实例作用域
+			方法：
+				任务办理时设置(通过TaskService对象)
+				当前任务设置(通过TaskService对象)
+				
+	3.3 流程变量使用方法
+		${assignee}、${price>100&&price<=300}
+	3.4 数据库表	
+		设置流程变量会在当前执行流程变量表插入记录，同时也会在历史流程变量表也插入记录
+		 act_ru_variable #当前流程变量表，记录当前运行流程实例可使用的流程变量，包括 global 和 local 变量 
+		 act_hi_varinst #历史流程变量表
+
+4. 组任务->即无负责人(assignee字段为null)
+	给任务设置多个候选人，可以从候选人中选择参与者来完成任务
+	在流程图中任务节点的配置中设置candidate-users(候选人)，多个候选人之间用逗号分开。
+	
+	组任务办理流程：
+		1. 查询组任务 
+			指定候选人，查询该候选人当前的待办任务。 候选人不能办理任务。
+		2. 拾取(claim)任务
+			该组任务的所有候选人都能拾取。 
+			将候选人的组任务，变成个人任务。该候选人就变成了该任务的负责人，
+			如果拾取后不想办理该任务，需要将已经拾取的个人任务归还到组里边，将个人任务变成了组任务
+			即使该用户不是候选人也能拾取，建议拾取时校验是否有资格。
+			组任务拾取后，该任务已有负责人，通过候选人将查询不到该任务
+		3. 查询个人任务
+			查询方式同个人任务部分，根据assignee 查询用户负责的个人任务
+		4. 办理任务
+			指明任务id，通过TaskService对象完成该任务(执行完成任务方法前，先验证该用户是否是该任务负责人->通过用户、任务id获取任务，若任务)
+		5. 归还任务
+			负责人不想办理该任务，需要将该任务归还为组任务，才能被其他候选人查询到，通过TaskService对象设置Assignee为null即可(指明任务id)
+			也可以不设置为null，设置为其他用户id负责(该用户可以不是候选人，但建议先进行候选人检查，再交接任务)-->即为任务交接
+
+5. 网关(Gateway)
+	网管只是为了规范和解决没有网管时不能解决的问题，比如说非真即假那样不用网管也不会错，又如果既不是真也不是假排他网管可以有默认执行项。
+	
+	5.1 排他网关(异或网关)->用来在流程中实现决策
+			当流程 执行到这个网关，所有分支都会判断条件是否为true，如果为true 则执行该分支，但排他网关只会选择一个为true 的分支(选择id最小的分支)执行。
+			若所有分支都不为true，则系统抛出异常。但若不使用排他网关，则流程直接结束且不会抛出异常。
+			
+			当由于数据问题，使得所有分支都为true，会执行所有为true的分支，若使用排他网关，可以只执行一个为true的分支。
+			
+			
+	5.2 并行网关 ->不会解析条件，即使顺序流中定义了条件，也会忽略 P92
+			允许将流程分成多条分支(fork)，也可以把多条分支汇聚(join)在一起。
+			如果同一个并行网关有多个进入和多个外出顺序流,它就同时具有分支和汇聚功能。 这时,网关会先汇聚所有进入的顺序流，然后再切分成多个并行分支。
+		
+			并行任务执行部分前后，由任务负责人去执行。但只有所有并行任务分支都完成(到达汇聚结点)后，顺序流才会继续往下执行。
+		
+			可观察的表：
+				act_ru_task #当前任务表 ->可观察到执行的并行任务，并且并行任务的有对应流程实例id(并行任务的流程实例id相等)
+				act_ru_execution #流程实例的执行表(由目前正执行的并行网关及并行任务组成) ->可看到并行任务记录有字段值对应流程实例id
+								在该表中若有并行网关的汇聚结点(并行任务中有字段为parallegateway值)：说明有一个分支已经到汇聚，等待其它的分支到达
+								当所有并行任务完成，都到达汇聚结点后，表中对应的流程实例被删除，流程实例执行完成。
+	5.3 包含网关->排他网关和并行网关的结合体(即分支中即能判断条件，又能并行执行，使满足条件的任务并行执行)
+			分支：所有外出顺序流的条件都会被解析，结果为true 的顺序流会以并行方式继续执行， 会为每个顺序流创建一个分支
+			汇聚：所有并行分支到达包含网关，会进入等待状态， 直到每个包含流程 token 的进入顺序流的分支(即条件满足的分支)到达。
+				这是与并行网关的最大不同。换句话说，包含网关只会等待被选中执行了的分支(即条件满足的分支)进入顺序流。在汇聚之后，流程会穿过包含网关继续执行。
+				
+				先走到汇聚结点的分支，要等待其它分支走到汇聚。
+				等所有分支走到汇聚，包含网关就执行完成。
+				在分支时，需要判断条件，符合条件的分支，将会执行，符合条件的分支最终才进行汇聚。
+		
+		
+6. 边界事件
+		
+		
+Activiti7与springboot的整合->需要SpringSecurity框架
+	1.环境准备
+		pom.xml依赖、SpringSecurity框架角色获取类及角色定义配置类、application.yml(springSecurity与mysql的链接配置信息)
+	2.流程定义
+		bpmn文件放在目录/src/main/resources/processes目录下，会自动部署到activiti数据库中,无需代码部署。
+		可以设置任务结点的负责人、候选人(用逗号分隔)及用户组(当不知道具体用户时，可设置组名)
+		
+			
+
+
+7. ProcessRuntime和TaskRuntime API
+	7.1 ProcessRuntime
+			默认整合了SpringSecurity，因为分了组任务、个人任务，通过用户角色信息决定权限
+			
+			流程定义.bpmn文件放在/src/main/resources/processes/下，会自动完成部署，无需代码部署。
+			ProcessRuntime仅是接口，而ProcessRuntimeImpl(源码代中加入了SpringSecurity的用户角色权限控制)是具体实现，封装了旧版本的Service(RepositoryService和RuntimeService)。
+			通过ProcessRuntime对象可以实现流程实例启动、分页查询、定时器、流程变量等。
+			
+			当然也可以不用ProcessRuntime，直接使用各种Service也可以。
+	7.2 TaskRuntime ->为用户/组创建任务、查询、拾取、完成、组信息、描述信息、优先级等。
+			TaskRuntime是接口，TaskRuntimeImpl是是实现，并且加入了SpringSecurity的用户角色权限控制，封装了TaskService等。
+			
+			
+			
+			
+
+
+
+
+任务结点触发的Java程序，执行时间过长，超时的处理，如果程序一直在运行，怎么可以超时重启程序：
+	1.支持超时可以发送邮件
+	
+	2.删除流程实例，重新开启
+		runtimeService.deleteProcessInstance(processInstanceId,"结束"),
+		但在事件中设置定时器，删除流程实例，
+		
+	
+	3.返回上一任务
+		修改当前活动输出流，指向上一已完成的活动，在完成当前活动后，再讲当前活动输出流恢复
+	
+	4.挂起流程实例
+	
+	5.定时器边界事件 ->当某个结点处理时间超时，可以指定跳转到另一结点处理
+		当流程到达了流程活动时，定时器启动，当定时器边界事件被触发后，当前的活动会被中断，流程会从定时器边界事件离开流程活动。定时器边界事件使用在一些限时的业务流程中较为合适
+		有两种定时器边界事件，一种是可中断的定时器边界事件，另外一种是不可中断的定时器边界事件。
+		可中断：一旦这个边界事件被触发，那么原来的执行流将会被中断（Activiti实现为将执行流数据从数据库中删除）
+		不可中断：即使该边界事件被触发，原来的执行流仍然不会中断（数据仍然存在于执行流数据库中），原来的执行流当前的活动为该边界事件的id
+
+
+
+	
+	
+Activiti7与Spring的整合：
+	1. maven工程，pom.xml添加依赖
+	2. 创建aactiviti与spring整合的配置文件:activiti-spring.xml->数据源配置、流程引擎、事务管理器等
+	
+	
+	
+Activiti7与SpringBoot的整合：
+	1. pom.xml依赖
+	2. SpringSecurity的用户信息配置类DemoApplicationConfiguration
+	3. SpringSecurity的用户信息验证类SecurityUtil
+	4. 链接数据库的application.yml文件放在resource下
+		解决：生成activiti数据库中只有17张表,无历史表(8张)
+			在application.yml中添加：
+			spring:
+				activiti:
+					historyLevel: audit
+					db-history-used: true 开启数据库历史表记录,默认是关闭的，生成的activiti数据库只有17张表，无历史表(8张)
+					
+	5. 流程定义.bpmn文件 
+		在resources/processes/下，会自动完成部署，无需代码部署。在act_ge_bytearray中可找到bpmn文件信息
+		可以设置负责人、候选人、用户组(候选人一定是同一组的)
+	6. 启动流程定义实例(此时act_ru_*中会有正在运行的信息)(ActivitiTest.testStartInstance函数)
+		启动成功后，可以在act_ru_task(excution_id字段)表中看到正在运行等待被执行的任务(结点)
+		在act_ru_execution(正在启动的活动，包括开始事件、任务)可查看启动的活动，包括开始事件、当前要完成的任务，可以查看启动用户
+	7. 查询任务、拾取任务、完成任务（ActivitiTest.testTask函数）
+		首先：有SpringSecurity框架的用户认证->指明了用户
+		查询任务: taskRuntime.tasks() ->能查询到负责人为该用户、或候选人为该用户、或者候选人组包含该用户的所有要被完成的任务
+		拾取任务：taskRuntime.claim() ->根据查询到的任务id拾取该任务
+		完成任务：taskRuntime.complete() ->根据查询到的任务id完成任务
+		
+		最后一个任务完成结束后，流程实例结束，act_ru_task表、act_ru_execution均无该实例信息(删除了)
+		
+		
+		测试：
+			流程任务SG、SF、PF三个结点的候选人所属组均为"activitiTeam",用户"liuchuan"属于该组，用户"other"不属于该组 ->
+				所以LogAS("liuchuan")能启动流程实例(testStartInstance函数)、也能查询到三个任务并完成任务(testTask函数)。
+				而LogAS("other")能启动流程实例(testStartInstance函数), 但查询不到三个任务，也就无法拾取并执行任务。因为三个任务所属候选组不包含用户"other"。
+				
+	
+Activiti7与SpringBoot、SpringMVC的整合：
+	1. java/activiti目录下创建controller文件，并创建MyController类，实现查询并完成任务逻辑
+	2. 编写Actviti7DemoApplication(SpringBoot引导类)，并注解不再使用SpringSecurity用户认证，启动该类进行测试(前提是必须有流程实例正在运行)
+		浏览器中输入：localhost:8080/task (task为MyController类中注解的响应页面),输入用户名和密码(DemoApplicationConfiguration中设置)，
+		查看控制台输出信息：会显示已经完成的任务，以及获取的新的待完成的任务(也可查看act_ru_task表查看当前要等待被完成的任务)
+		
+		
+
+BUG1:
+	编写测试程序后，提示无法从工厂中创建ProcessRuntime实例
+解决：
+	将测试程序ActivitiTest目录及main中源代码路径与pom.xml中groupId保持一致
+	
+	
+	
+	
+
+
+import org.activiti.api.process.model.ProcessDefinition与org.activiti.engine.repository.ProcessDefinition的区别？？
+
+
+	
+	
+	
+		
+	

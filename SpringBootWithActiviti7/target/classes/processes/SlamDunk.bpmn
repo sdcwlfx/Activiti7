@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" expressionLanguage="http://www.w3.org/1999/XPath" id="m1583120963377" name="" targetNamespace="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema">
-  <process id="myProcess_1" isClosed="false" isExecutable="true" processType="None">
+  <process id="SlamDunk" isClosed="false" isExecutable="true" processType="None">
     <startEvent id="_2" name="StartEvent"/>
-    <userTask activiti:candidateGroups="activitiTeam" activiti:exclusive="true" id="_3" name="分位"/>
-    <userTask activiti:candidateGroups="activitiTeam" activiti:exclusive="true" id="_4" name="小前"/>
-    <userTask activiti:exclusive="true" id="_5" name="大前"/>
+    <userTask activiti:candidateGroups="activitiTeam" activiti:exclusive="true" id="_3" name="SG"/>
+    <userTask activiti:candidateGroups="activitiTeam" activiti:exclusive="true" id="_4" name="SF"/>
+    <userTask activiti:candidateGroups="activitiTeam" activiti:exclusive="true" id="_5" name="PF"/>
     <endEvent id="_6" name="EndEvent"/>
     <sequenceFlow id="_7" sourceRef="_2" targetRef="_3"/>
     <sequenceFlow id="_8" sourceRef="_3" targetRef="_4"/>
@@ -12,7 +12,7 @@
     <sequenceFlow id="_10" sourceRef="_5" targetRef="_6"/>
   </process>
   <bpmndi:BPMNDiagram documentation="background=#FFFFFF;count=1;horizontalcount=1;orientation=0;width=842.4;height=1195.2;imageableWidth=832.4;imageableHeight=1185.2;imageableX=5.0;imageableY=5.0" id="Diagram-_1" name="New Diagram">
-    <bpmndi:BPMNPlane bpmnElement="myProcess_1">
+    <bpmndi:BPMNPlane bpmnElement="SlamDunk">
       <bpmndi:BPMNShape bpmnElement="_2" id="Shape-_2">
         <omgdc:Bounds height="32.0" width="32.0" x="45.0" y="145.0"/>
         <bpmndi:BPMNLabel>
