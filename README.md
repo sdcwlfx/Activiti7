@@ -41,6 +41,6 @@
 ## Activiti7与SpringBoot、SpringMVC的整合
 	1. java/activiti目录下创建controller文件，并创建MyController类，实现查询并完成任务逻辑
 	2. 编写Actviti7DemoApplication(SpringBoot引导类)，并注解不再使用SpringSecurity用户认证，启动该类进行测试(前提是必须有流程实例正在运行)
-		浏览器中输入：localhost:8080/task (task为MyController类中注解的响应页面),输入用户名和密码(DemoApplicationConfiguration中设置)，
-		查看控制台输出信息：会显示已经完成的任务，以及获取的新的待完成的任务(也可查看act_ru_task表查看当前要等待被完成的任务)
+	浏览器中输入：localhost:8080/task (task为MyController类中注解的响应页面),输入用户名和密码(DemoApplicationConfiguration中设置)，
+	查看控制台输出信息：会显示已经完成的任务，以及获取的新的待完成的任务(也可查看act_ru_task表查看当前要等待被完成的任务)
 		
