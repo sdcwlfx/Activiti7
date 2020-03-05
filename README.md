@@ -5,7 +5,7 @@
 	
 	
 	
-Activiti7与SpringBoot的整合：
+## Activiti7与SpringBoot的整合
 	1. pom.xml依赖
 	2. SpringSecurity的用户信息配置类DemoApplicationConfiguration
 	3. SpringSecurity的用户信息验证类SecurityUtil
@@ -38,7 +38,7 @@ Activiti7与SpringBoot的整合：
 				而LogAS("other")能启动流程实例(testStartInstance函数), 但查询不到三个任务，也就无法拾取并执行任务。因为三个任务所属候选组不包含用户"other"。
 				
 	
-Activiti7与SpringBoot、SpringMVC的整合：
+## Activiti7与SpringBoot、SpringMVC的整合
 	1. java/activiti目录下创建controller文件，并创建MyController类，实现查询并完成任务逻辑
 	2. 编写Actviti7DemoApplication(SpringBoot引导类)，并注解不再使用SpringSecurity用户认证，启动该类进行测试(前提是必须有流程实例正在运行)
 		浏览器中输入：localhost:8080/task (task为MyController类中注解的响应页面),输入用户名和密码(DemoApplicationConfiguration中设置)，
