@@ -32,10 +32,10 @@
 		最后一个任务完成结束后，流程实例结束，act_ru_task表、act_ru_execution均无该实例信息(删除了)
 		
 		
-		测试：
-			流程任务SG、SF、PF三个结点的候选人所属组均为"activitiTeam",用户"liuchuan"属于该组，用户"other"不属于该组 ->
-				所以LogAS("liuchuan")能启动流程实例(testStartInstance函数)、也能查询到三个任务并完成任务(testTask函数)。
-				而LogAS("other")能启动流程实例(testStartInstance函数), 但查询不到三个任务，也就无法拾取并执行任务。因为三个任务所属候选组不包含用户"other"。
+	测试：
+		流程任务SG、SF、PF三个结点的候选人所属组均为"activitiTeam",用户"liuchuan"属于该组，用户"other"不属于该组 ->
+		所以LogAS("liuchuan")能启动流程实例(testStartInstance函数)、也能查询到三个任务并完成任务(testTask函数)。
+		而LogAS("other")能启动流程实例(testStartInstance函数), 但查询不到三个任务，也就无法拾取并执行任务。因为三个任务所属候选组不包含用户"other"。
 				
 	
 ## Activiti7与SpringBoot、SpringMVC的整合
